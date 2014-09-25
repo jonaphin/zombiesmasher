@@ -23,7 +23,10 @@ public class Game {
 		}
 		
 		testCasesCount = Integer.parseInt(scanner.nextLine());
-		System.out.println(testCasesCount);
+		
+		if(testCasesCount < 1 || testCasesCount > 100) {
+			throw new RuntimeException("The number of cases must be between at least 1 and at most 100");
+		}
 		
 		// load data for each case
 		for(int i = 0; i < testCasesCount; i++) {			
