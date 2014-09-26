@@ -1,9 +1,10 @@
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 
-public class Zombie {
+public class Zombie implements Comparable {
 	private Point position;
-	private int animateAt;
+	private int animatesAt;
 	private boolean isAlive;
 	private int diesAt;
 	private int LONGEVITY = 1000;
@@ -14,7 +15,7 @@ public class Zombie {
 	public Zombie(Point position, int animatesAt) {
 		this.setPosition(position);
 		this.setIsAlive(false);
-		this.setAnimateAt(animatesAt);
+		this.setAnimatesAt(animatesAt);
 		this.setDeathTime();
 	}
 	
@@ -25,6 +26,23 @@ public class Zombie {
 		int animatesAt = Integer.parseInt(parts[2]);
 		
 		return new Zombie(position, animatesAt);
+	}
+	
+	public int distanceFrom(Point p) {
+		return (int) this.getPosition().distance((Point2D) p);
+	}
+	
+	public boolean canBeReachedAndSmashedFromPoint(Point p, int timeFromNow) {
+		int distance = this.distanceFrom(p);
+		int trueDistance = distance + timeFromNow;
+		
+		return (this.getAnimatesAt() <= trueDistance && this.getDiesAt() >= trueDistance);
+	}
+	
+
+	@Override
+	public int compareTo(Object z) {
+		return (this.getAnimatesAt() - ((Zombie) z).getAnimatesAt());
 	}
 
 	
@@ -47,19 +65,19 @@ public class Zombie {
 	}
 	
 	private void setDeathTime() {
-		this.setDiesAt(this.getAnimateAt() + this.LONGEVITY);
+		this.setDiesAt(this.getAnimatesAt() + this.LONGEVITY);
 	}
 
 	public void setIsAlive(boolean isAlive) {
 		this.isAlive = isAlive;
 	}
 
-	public int getAnimateAt() {
-		return animateAt;
+	public int getAnimatesAt() {
+		return animatesAt;
 	}
 
-	public void setAnimateAt(int animateAt) {
-		this.animateAt = animateAt;
+	public void setAnimatesAt(int animatesAt) {
+		this.animatesAt = animatesAt;
 	}
 
 	public int getDiesAt() {
