@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 
 public class Game {
-	int testCasesCount;
+	int casesCount;
 	ArrayList<Case> cases = new ArrayList<Case>();
 
 	public Game() {
@@ -30,21 +30,21 @@ public class Game {
 			throw new RuntimeException();
 		}
 		
-		testCasesCount = Integer.parseInt(scanner.nextLine());
+		casesCount = Integer.parseInt(scanner.nextLine());
 		
-		if(testCasesCount < 1 || testCasesCount > 100) {
+		if(casesCount < 1 || casesCount > 100) {
 			throw new RuntimeException("The number of cases must be between at least 1 and at most 100");
 		}
 		
 		// load data for each case
-		for(int i = 0; i < testCasesCount; i++) {			
+		for(int i = 0; i < casesCount; i++) {			
 			// determine how many zombies will exist for this case
 			int zombiesCount = Integer.parseInt(scanner.nextLine());
 			Case thisCase = new Case(zombiesCount);
 			
 			// add all zombies to this case
 			for(int j = 0; j < zombiesCount; j++) {
-				thisCase.zombies.add(Zombie.FactoryFromInput(scanner.nextLine()));
+				thisCase.AddZombie(Zombie.FactoryFromInput(scanner.nextLine()));
 			}
 			
 			cases.add(thisCase);
@@ -71,10 +71,8 @@ public class Game {
 			
 			outputFile.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

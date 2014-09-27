@@ -5,7 +5,6 @@ import java.awt.geom.Point2D;
 public class Zombie implements Comparable<Object> {
 	private Point position;
 	private int animatesAt;
-	private boolean isAlive;
 	private int diesAt;
 	private int LONGEVITY = 1000;
 	
@@ -14,7 +13,6 @@ public class Zombie implements Comparable<Object> {
 	
 	public Zombie(Point position, int animatesAt) {
 		this.setPosition(position);
-		this.setIsAlive(false);
 		this.setAnimatesAt(animatesAt);
 		this.setDeathTime();
 	}
@@ -55,21 +53,9 @@ public class Zombie implements Comparable<Object> {
 	public void setPosition(Point position) {
 		this.position = position;
 	}
-
-	public boolean isAlive(int currentTime) {
-		if(isDead) {
-			return false;
-		}
-		
-		return isAlive;
-	}
 	
 	private void setDeathTime() {
 		this.setDiesAt(this.getAnimatesAt() + this.LONGEVITY);
-	}
-
-	public void setIsAlive(boolean isAlive) {
-		this.isAlive = isAlive;
 	}
 
 	public int getAnimatesAt() {

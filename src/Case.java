@@ -8,7 +8,6 @@ public class Case {
 	public ArrayList<Zombie> zombies;
 	public int zombiesCount;
 	public int maxSmashes = 0;
-	int curTime = 0;
 	
 	public Case(int zombiesCount) {
 		this.zombiesCount = zombiesCount;
@@ -24,7 +23,16 @@ public class Case {
 		}
 	}
 	
-	public ArrayList<Zombie> getZombiesAtTime(int currentTime) {
+	public void play() {
+		Collections.sort((ArrayList<Zombie>)this.zombies);
+		
+		Player player = new Player();
+		ArrayList<SmashedZombie> killedZombies = this.smashDownThatPath(null, this.zombies, player.getPosition(), 0 + player.getHandicap(0));
+		
+		this.maxSmashes = this.getBestSmashCount(killedZombies);		
+	}
+	
+	private ArrayList<Zombie> getZombiesAtTime(int currentTime) {
 		ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 		
 		for (Zombie zombie : this.zombies) {
@@ -34,15 +42,6 @@ public class Case {
 		}
 		
 		return zombies;
-	}
-	
-	public void play() {
-		Collections.sort((ArrayList<Zombie>)this.zombies);
-		
-		Player player = new Player();
-		ArrayList<SmashedZombie> killedZombies = this.smashDownThatPath(null, this.zombies, player.getPosition(), 0 + player.getHandicap(0));
-		
-		this.maxSmashes = this.getBestSmashCount(killedZombies);		
 	}
 	
 	private int getBestSmashCount(ArrayList<SmashedZombie> smashedZombies) {
