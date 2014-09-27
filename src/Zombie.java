@@ -32,9 +32,9 @@ public class Zombie implements Comparable<Object> {
 		return (int) this.getPosition().distance((Point2D) p);
 	}
 	
-	public boolean canBeReachedAndSmashedFromPoint(Point p, int timeFromNow) {
+	public boolean canBeReachedAndSmashedFromPoint(Point p, int nextFullChargedAt) {
 		int distance = this.distanceFrom(p);
-		int trueDistance = distance + timeFromNow;
+		int trueDistance = nextFullChargedAt > distance ? nextFullChargedAt : distance;
 		
 		return (this.getAnimatesAt() <= trueDistance && this.getDiesAt() >= trueDistance);
 	}

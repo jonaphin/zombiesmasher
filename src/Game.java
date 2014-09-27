@@ -1,5 +1,7 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,12 +12,12 @@ public class Game {
 
 	public Game() {
 		this.loadScenario();
-		
-		cases.get(2).play();
 
-//		for(Case currentCase : cases) {
-//			currentCase.play();
-//		}
+		for(Case currentCase : cases) {
+			currentCase.play();
+		}
+		
+		this.saveCases();
 	}
 	
 	private void loadScenario() {
@@ -47,6 +49,33 @@ public class Game {
 			
 			cases.add(thisCase);
 			
+		}
+	}
+	
+	private void saveCases() {
+		PrintWriter outputFile;
+		
+		try {
+			outputFile = new PrintWriter("output.txt", "UTF-8");
+			
+			for(Case currentCase : this.cases) {
+				Integer caseNumber = this.cases.indexOf(currentCase) + 1;				
+				String caseSummary = "Case #" + caseNumber + ": " + currentCase.maxSmashes;
+				
+				// Output to file
+				outputFile.println(caseSummary);
+				
+				// Output to console
+				System.out.println(caseSummary);
+			}
+			
+			outputFile.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

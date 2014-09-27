@@ -38,7 +38,7 @@ public class Player {
 			 return 0;
 		}
 		
-		return Math.abs(currentTime - this.getLastSmashTime());
+		return Math.abs(rechargeTime - currentTime - this.getLastSmashTime());
 		
 		
 	}
