@@ -8,12 +8,11 @@ public class Player {
 	private Integer lastSmashTime;
 	private Point position;
 	
-	public Player(String name) {
-		this.setName(name);
+	public Player() {
 		this.setPosition(new Point(0, 0));
 	}
 
-	public boolean SmashAt(int currentTime) {
+	public boolean smashAt(int currentTime) {
 		boolean canSmash = false;		
 		
 		if(this.getLastSmashTime() == null) {
@@ -31,11 +30,7 @@ public class Player {
 	
 	public int getHandicap(int currentTime) {
 		if(this.getLastSmashTime() == null) {
-			if(currentTime < rechargeTime) {
-				return currentTime;
-			} else {
-				return 0;
-			}
+			return 0;
 		}
 		
 			
@@ -43,7 +38,9 @@ public class Player {
 			 return 0;
 		}
 		
-		return currentTime - this.getLastSmashTime();
+		return Math.abs(currentTime - this.getLastSmashTime());
+		
+		
 	}
 	
 	// Getters / Setters

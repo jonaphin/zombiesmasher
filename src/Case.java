@@ -7,7 +7,6 @@ import java.util.List;
 public class Case {
 	public ArrayList<Zombie> zombies;
 	public int zombiesCount;
-	Player player = new Player("Zombie Smasher");
 	int curTime = 0;
 	
 	public Case(int zombiesCount) {
@@ -28,7 +27,7 @@ public class Case {
 		ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 		
 		for (Zombie zombie : this.zombies) {
-			if(zombie.isAlive(currentTime)) {
+			if(zombie.getAnimatesAt() >= currentTime) {
 				zombies.add(zombie);
 			}
 		}
@@ -37,39 +36,86 @@ public class Case {
 	}
 	
 	public void play() {
-		Collections.sort(this.zombies);
+		Collections.sort((ArrayList<Zombie>)this.zombies);
 		
-		ArrayList<ArrayList<Zombie>> killedZombies = new ArrayList<ArrayList<Zombie>>();
+		Player player = new Player();
+		ArrayList<SmashedZombie> killedZombies = this.smashDownThatPath(null, this.zombies, player.getPosition(), 0 + player.getHandicap(0));
 		
-		killedZombies.addAll(this.smashDownThatPath(this.zombies, player.getPosition(), 0));
-		
-		System.out.print(killedZombies);
+		System.out.println(this.getBestSmashCount(killedZombies));		
 	}
 	
-	private ArrayList<ArrayList<Zombie>> smashDownThatPath(List<Zombie> remainingZombies, Point p, int currentTime) {
+	private int getBestSmashCount(ArrayList<SmashedZombie> smashedZombies) {
+		int maxScore = 0;
+		
+		for(SmashedZombie zombie : smashedZombies) {
+			int currentSmashDepth = zombie.maxDepth();
+			
+			if(currentSmashDepth > maxScore) {
+				maxScore = currentSmashDepth;
+			}
+		}
+		
+		return maxScore;
+	}
+	
+	private ArrayList<SmashedZombie> smashDownThatPath(SmashedZombie parentSmashedZombie, List<Zombie> remainingZombies, Point p, int currentTime) {
 		if(remainingZombies == null || remainingZombies.size() < 1) {
+			System.out.println("no more zombies");
 			return null;
 		}
 		
-		ArrayList<ArrayList<Zombie>> killedZombies = new ArrayList<ArrayList<Zombie>>();
+		if(currentTime < 0)
+			currentTime = 0;
+		
+		ArrayList<SmashedZombie> killedZombies = new ArrayList<SmashedZombie>();
 		
 		for(Zombie zombie : remainingZombies) {
-			if(zombie.canBeReachedAndSmashedFromPoint(p, currentTime)) {
-				int nextZombieIdx = remainingZombies.indexOf(zombie) + 1;
-				int lastZombieIdx = remainingZombies.size() - 1;
-				List<Zombie> subRemainingZombies;
-			
-				if(nextZombieIdx <= lastZombieIdx) {
-					subRemainingZombies = remainingZombies.subList(nextZombieIdx, lastZombieIdx);
-				} else {
-					subRemainingZombies = null;
+			if(zombie.canBeReachedAndSmashedFromPoint(p, currentTime)) {				
+				List<Zombie> subRemainingZombies;				
+				
+				Player player = new Player();
+				
+				if(parentSmashedZombie != null) {
+					player.setLastSmashTime(parentSmashedZombie.deadAt);
 				}
 				
-				ArrayList<ArrayList<Zombie>> deeperSmashery = this.smashDownThatPath(subRemainingZombies, zombie.getPosition(), zombie.getAnimatesAt());
+				SmashedZombie smashedZombie = new SmashedZombie(parentSmashedZombie, zombie);
+				smashedZombie.deadAt = zombie.getAnimatesAt() + player.getHandicap(zombie.getAnimatesAt());
 				
-				if(deeperSmashery != null) {
-					killedZombies.addAll( deeperSmashery );
-				}				
+				System.out.println("Player killed zombie("+smashedZombie.depth+") " + zombie.getPosition().toString() +" at " + smashedZombie.deadAt);
+				
+				if(smashedZombie.depth > 1) {
+					System.out.println("Killed its parent at: " + smashedZombie.parent.deadAt);
+				}
+				
+				subRemainingZombies = this.getZombiesAtTime(currentTime);
+				
+				
+				if(subRemainingZombies.contains(zombie)) {
+					subRemainingZombies.remove(zombie);
+					System.out.println("Removing Zombie("+smashedZombie.depth+") " + zombie.getPosition().toString());
+				} 
+				
+				SmashedZombie ancestor = parentSmashedZombie;
+				
+				while(ancestor != null) {
+					if(subRemainingZombies.contains(ancestor.zombie)) {
+						subRemainingZombies.remove(ancestor.zombie);
+						System.out.println("Removing Parent Zombie("+ancestor.depth+") " + ancestor.zombie.getPosition().toString());
+						
+						ancestor = ancestor.parent;
+					} else {
+						ancestor = null;
+					}
+				}
+				
+				System.out.println("Subs" + subRemainingZombies);
+				
+				//if(smashedZombie.depth > 15) break;
+				
+				smashedZombie.children = this.smashDownThatPath(smashedZombie, subRemainingZombies, zombie.getPosition(), smashedZombie.deadAt);
+				
+				killedZombies.add(smashedZombie);
 			}
 		}
 		

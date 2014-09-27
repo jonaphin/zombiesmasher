@@ -11,9 +11,11 @@ public class Game {
 	public Game() {
 		this.loadScenario();
 		
-		for(Case currentCase : cases) {
-			currentCase.play();
-		}
+		cases.get(2).play();
+
+//		for(Case currentCase : cases) {
+//			currentCase.play();
+//		}
 	}
 	
 	private void loadScenario() {

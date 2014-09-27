@@ -2,7 +2,7 @@ import java.awt.Point;
 import java.awt.geom.Point2D;
 
 
-public class Zombie implements Comparable {
+public class Zombie implements Comparable<Object> {
 	private Point position;
 	private int animatesAt;
 	private boolean isAlive;
@@ -22,7 +22,7 @@ public class Zombie implements Comparable {
 	
 	public static Zombie FactoryFromInput(String inputString) {
 		String[] parts = inputString.split(" ");
-		Point position = new Point(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+		Point position = new Point(Integer.parseInt(parts[0]) * 100, Integer.parseInt(parts[1]) * 100);
 		int animatesAt = Integer.parseInt(parts[2]);
 		
 		return new Zombie(position, animatesAt);
